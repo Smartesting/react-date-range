@@ -143,6 +143,7 @@ Month.propTypes = {
   showWeekDays: PropTypes.bool,
   showMonthName: PropTypes.bool,
   fixedHeight: PropTypes.bool,
+  highlightAllOnEmptySelection: PropTypes.bool,
 };
 
 export default Month;

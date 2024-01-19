@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { startOfDay, format, isSameDay, isAfter, isBefore, endOfDay } from 'date-fns';
+import { inRange } from './inRange';
 
 class DayCell extends Component {
   constructor(props, context) {
@@ -83,12 +84,12 @@ class DayCell extends Component {
     });
   };
   renderPreviewPlaceholder = () => {
-    const { preview, day, styles } = this.props;
+    const { preview, day, styles, highlightAllOnEmptySelection } = this.props;
     if (!preview) return null;
     const startDate = preview.startDate ? endOfDay(preview.startDate) : null;
     const endDate = preview.endDate ? startOfDay(preview.endDate) : null;
-    const isInRange =
-      (!startDate || isAfter(day, startDate)) && (!endDate || isBefore(day, endDate));
+    const isInRange = inRange(day, startDate, endDate, highlightAllOnEmptySelection);
+
     const isStartEdge = !isInRange && isSameDay(day, startDate);
     const isEndEdge = !isInRange && isSameDay(day, endDate);
     return (
@@ -170,10 +171,9 @@ class DayCell extends Component {
         {this.renderSelectionPlaceholders()}
         {this.renderPreviewPlaceholder()}
         <span className={this.props.styles.dayNumber}>
-          {
-            dayContentRenderer?.(this.props.day) ||
+          {dayContentRenderer?.(this.props.day) || (
             <span>{format(this.props.day, this.props.dayDisplayFormat)}</span>
-          }
+          )}
         </span>
       </button>
     );
@@ -219,6 +219,7 @@ DayCell.propTypes = {
   onMouseUp: PropTypes.func,
   onMouseEnter: PropTypes.func,
   dayContentRenderer: PropTypes.func,
+  highlightAllOnEmptySelection: PropTypes.bool,
 };
 
 export default DayCell;
